@@ -1,0 +1,3 @@
+{"ts":1362301172008,"silentsave":true,"restoring":false,"patch":[[{"diffs":[[1,"\n/*\n * GET home page.\n */\n\nexports.index = function(req, res){\n  res.render('login', { title: 'Hatch-Catch' });\n};"]],"start1":0,"start2":0,"length1":0,"length2":114}]],"length":114}
+{"contributors":[],"silentsave":false,"ts":1362307044916,"patch":[[{"diffs":[[0,"tch-"],[-1,"Catch' }"],[1,");\n};\n\nexports.option = function(req, res){\n  res.render('option'"],[0,");\n}"]],"start1":97,"start2":97,"length1":16,"length2":73}]],"length":171,"saved":false}
+{"ts":1362307060556,"patch":[[{"diffs":[[0,"gin'"],[-1,", { title: 'Hatch-"],[0,");\n}"]],"start1":79,"start2":79,"length1":26,"length2":8}]],"length":153,"saved":false}

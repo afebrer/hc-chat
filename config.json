@@ -1,0 +1,15 @@
+{
+
+    auth: {
+        "twitter": {
+        "consumerkey" : "LEMDKdQ4NXGOddvSjJOtBQ",
+        "consumersecret" : "44dQ4l0dlLyXAYjf09m4pLTUPt1J9sysFeXmhKJDA",
+        "callback" : "http://hc-chat.mine.c9.io/authfb/callback"
+    },
+        "facebook": {
+        "clientid" : "474125875979678",
+        "clientsecret" : "0b752850af7677b8416dc47c856fad7b",
+        "callback" : "http://hc-chat.mine.c9.io/authfb/callback"
+        }
+    }
+}
