@@ -1,15 +1,16 @@
+
 /*
-* Module dependencies
-*/
+ * Module dependencies
+ */
 
 var passport = require('passport')
   , TwitterStrategy = require('passport-twitter').Strategy
-  , FacebookStrategy = require('passport-facebook').Strategy
+  , FacebookStrategy = require('passport-facebook').Strategy 
   , config = require('./config.json');
 
 /*
-* Auth strategy
-*/
+ * Auth strategy
+ */
 
 passport.serializeUser(function(user, done) {
   done(null, user);
@@ -29,7 +30,7 @@ if(config.auth.twitter.consumerkey.length) {
       return done(null, profile);
     }
   ));
-}
+} 
 
 if(config.auth.facebook.clientid.length) {
   passport.use(new FacebookStrategy({
