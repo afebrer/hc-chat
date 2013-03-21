@@ -5,10 +5,14 @@ block content
 		.header-wrapper
 			.header
 			.user-header
-				h2 Hi 
-					=user.codename
-					!
-				a.signout(href="/signout")
+				h2 
+					table
+						tr
+							td Hi
+							td 
+								p#codename.pcn=user.codename
+							td 
+				a.signout(href="/logout")
 		.chat-container
 			.current-photo
 			.next-photo
@@ -19,5 +23,23 @@ block content
 			.chat-text
 				input#message(type='text', name='message')
 				button#reply(type='button',name='reply')
+				#dialog(hidden="hidden")
+					#countdown_dashboard
+						.dash(class="minutes_dash")
+							span.dash_title minutes
+							.digit
+								.top(style='display: none;') 0
+								.bottom(style='display: block;') 0
+							.digit
+								.top(style='display: none;') 0
+								.bottom(style='display: block;') 0
+						.dash(class="seconds_dash")
+							span.dash_title seconds
+							.digit
+								.top(style='display: none;') 3
+								.bottom(style='display: block;') 3
+							.digit
+								.top(style='display: none;') 0
+								.bottom(style='display: block;') 0
 	script(src="/socket.io/socket.io.js")
-	script(defer, src="/js/chat.js") 
+	script(defer, src="/js/chat.js")

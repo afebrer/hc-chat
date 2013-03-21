@@ -1,0 +1,54 @@
+extends layout
+
+block content
+	body.ranking-page
+		.header-wrapper
+			.header
+			.user-header
+				h2 Hi
+		.ranking-container
+			.ranking-selection-box
+				.ranking-selection-list
+					.ranking-left
+					- var members = members, i =0, j =0
+					each member in members
+						- i++
+						- if(i <= 8){
+							img#codename.chat_photo(img='')
+							p codename
+							#r1.rate_widget
+								.codename_1.ratings_chick
+								.codename_2.ratings_chick
+								.codename_3.ratings_chick
+								.codename_4.ratings_chick
+								.codename_5.ratings_chick
+						- }
+					.ranking-right
+					each member in members
+						- j++
+						- if(j > 8){
+							img#codename.chat_photo(img='')
+							p codename
+							#r1.rate_widget
+								.codename_1.ratings_chick
+								.codename_2.ratings_chick
+								.codename_3.ratings_chick
+								.codename_4.ratings_chick
+								.codename_5.ratings_chick
+						- }
+		include footer
+		script
+			$('.ratings_chick').hover(
+					function() {  
+						$(this).prevAll().andSelf().addClass('ratings_over');  
+						$(this).nextAll().removeClass('ratings_vote');   
+					},
+					function() {  
+						$(this).prevAll().andSelf().removeClass('ratings_over');
+					}  
+			);
+			$('.ratings_chick').click(
+					function(){
+						alert($(this).attr('class'));
+					}
+			);

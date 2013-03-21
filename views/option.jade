@@ -6,7 +6,7 @@ block content
 			.header
 		.gender-container
 			.choose-gender-box
-				form(method='post', action='/chat')
+				form(method='post', action='/chat', id='option')
 					button#but-male.male(type='button')
 						input(type='radio', id='gender-m', name='gender-m', value='male', hidden='true')
 					button#but-female.female(type='button')
@@ -14,7 +14,7 @@ block content
 					.username-box
 						center
 							.username-wrapper
-								input#username(type='text', name='username')
+								input#username(type='text', name='username', maxlength='8')
 							button#submit(type='submit',name='submit')
 		include footer
 		script
@@ -45,4 +45,7 @@ block content
 					$(this).css('background-position', '-124px 0').removeClass('s');
 					$('#but-male').css('background-position', '-128px 0').removeClass('s');
 				}
+			});
+			$('#option').submit(function() {
+				$('#username').val($('#username').val().replace(" ",""));
 			});

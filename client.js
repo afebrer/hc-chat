@@ -2,6 +2,7 @@ module.exports = {
     
     roomList : function(client,fn){
         client.smembers('hc:rooms',function(err, rooms){
+            console.log("Getting Rooms: " + rooms.length);
             if(err){
                 fn(err);
             }
@@ -10,49 +11,114 @@ module.exports = {
             }
         });  
     },
-    getRoom : function(client,user,fn){
-        console.log("Getting Rooms and Visitor");
-        console.log(user);
-        client.smembers('hc:rooms',function(err, rooms){
+    roomVisitors : function(client,room,fn){
+    	console.log('hc:room:'+room+':visitor');
+    	client.smembers('hc:room:'+room+':visitor',function(err, visitors){
             if(err){
                 fn(err);
             }
-            else if(rooms.length > 0){
-                var i=0;
-                rooms.forEach(function(room){
-                    var roomInfo = JSON.parse(room);
-                    /*** is room empty ***/
-                    if(roomInfo.visitor.length === 0){
-                        fn(null,roomInfo); return;
-                    }
-                    /*** is user already exist ***/
-                    roomInfo.visitor.forEach(function(visitor){
-                        if(visitor.username == user.username){
-                            fn(null,roomInfo); return;
-                           
-                        }
-                    });
-                    /*** is room contain 1 visitor and gender is opposite ***/
-                    if(roomInfo.visitor.length == 1 &&  (roomInfo.visitor[0].gender != user.gender)){
-                        fn(null,roomInfo); return;
-                    }
-                    i++;
-                });
-                /*** no more vacant room ***/
-                if(i == rooms.length){
-                    fn(null,{no:i++,visitor:[]});
-                }
-            }
-            /*** no room created yet ***/
             else{
-                fn(null,{no:1,visitor:[]});
+                fn(null,visitors);
             }
-        });
+        }); 
+    },
+    roomMembers : function(client,fn){
+    	client.smembers('hc:rooms',function(err, rooms){
+            if(err){
+                fn(err);
+            }
+            else{
+            	var room_map = 1;
+            	var ar = new Array();
+            	rooms.forEach(function(room){
+            		client.smembers('hc:room:'+room+':visitor',function(err, visitors){
+                        if(err){
+                            fn(err);
+                        }
+                        else{
+                        	ar.push({room:room_map,members:visitors});
+                        }
+                        if(room_map >= rooms.length){
+                        	console.log(ar);
+                        	fn(null,ar);
+                        }
+                        room_map++;
+                    });
+            	});
+            	
+            }
+        });  
+    	
+    },
+    accomodateVisitor : function(client,user,fn){
+    	
+    	client.smembers('hc:rooms',function(err, rooms){
+    		if(err){
+    			fn(err);
+    		}
+    		if(!rooms || (rooms.length == 0)){
+    			client.sadd('hc:rooms',1);
+    			client.sadd('hc:room:1:visitor',JSON.stringify(user));
+    			fn(null,1);
+    		}
+    		if(rooms.length > 0){
+    			var ctr =0;
+    			rooms.every(function(room){
+    				console.log('hc:room:'+room+':visitor');
+    				client.smembers('hc:room:'+room+':visitor',function(err,visitors){
+    					room = ctr + 1;
+    					if(err){
+    						fn(err); return false;
+    					}
+    					if(!visitors || (visitors.length == 0)){
+    						
+    						client.sadd('hc:rooms',room);
+    		    			client.sadd('hc:room:'+room+':visitor',JSON.stringify(user));
+    		    			fn(null,1); return false;
+    					}
+    					if(visitors.length == 1 && JSON.parse(visitors[0]).gender != user.gender){
+    						client.sadd('hc:room:'+ room +':visitor',JSON.stringify(user));
+    						fn(null,room); return false;
+    					}
+    					ctr++;
+    					console.log("counter : "+ctr);
+    					if(ctr >= rooms.length){
+    						var room = rooms.length + 1;
+    						client.sadd('hc:rooms',room);
+    		    			client.sadd('hc:room:'+ room +':visitor',JSON.stringify(user));
+    		    			fn(null,room); return false;
+    					}
+    					
+    					
+    				});
+    				return true;
+    			});
+    			
+    		}
+    		
+    	});
+    	
+    },
+    switchVisitorRoom : function(client,room,nroom,visitor,fn){
+    	console.log("========================");
+    	client.srem('hc:room:'+room+':visitor',JSON.stringify(visitor),function(err,result){
+    		if(result){
+    			client.sadd('hc:room:'+nroom+':visitor',JSON.stringify(visitor),function(err,result){
+    				console.log("room " + room);
+        			console.log("nroom "+nroom);
+        			console.log("========================");
+        			fn(err,nroom);
+        			
+        		});
+    		}
+    		else{
+    			fn(err);
+    		}
+    		
+    	});
     },
     addVisitor : function(client,room,visitor){
         console.log("Adding user");
-        console.log(room);
-        console.log(visitor);
         var isUserExist = false;
         room.visitor.forEach(function(user){
             if(user.username == visitor.username){
@@ -62,18 +128,6 @@ module.exports = {
         if(!isUserExist){
             client.srem('hc:rooms',JSON.stringify(room));
             room.visitor.push(visitor);    
-        }
-        client.sadd('hc:rooms',JSON.stringify(room));
-    },
-    removeVisitor : function(client,room,visitor){
-        console.log("Removing user");
-        console.log(room);
-        console.log(visitor);
-        client.srem('hc:rooms',JSON.stringify(room));
-        for(var user in room.visitor){
-            if(room.visitor[user].username == visitor.username){
-                delete room.visitor[user];
-            }
         }
         client.sadd('hc:rooms',JSON.stringify(room));
     }
