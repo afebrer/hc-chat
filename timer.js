@@ -1,4 +1,4 @@
-exports.Timer =  function(callback, delay) {
+ exports.Timer =  function(callback, delay) {
     var timerId, start, remaining = delay;
 
     this.pause = function() {
@@ -10,4 +10,4 @@ exports.Timer =  function(callback, delay) {
         timerId = setTimeout(callback, remaining);
     };
     this.resume();
-}
+};

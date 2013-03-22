@@ -160,6 +160,8 @@ io.sockets.on('connection', function (socket) {
           		timer_start = true;
           	 }
                 
+              
+              
               socket.on('disconnect', function() {
                 //model.removeVisitor(client,room,user);
               });
